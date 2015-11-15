@@ -1,35 +1,46 @@
 #define READ_PIN 7
- 
+
+typedef struct{
+  long val;
+  int type;
+} node;
+
 void setup(){
   Serial.begin(57600);
   pinMode(READ_PIN,INPUT);
    
-  Serial.println("Ready to receive");
+  Serial.println("ready");
 }
+node nodes[512];
+node* _cur = &nodes[0];
 unsigned long now = micros();
 unsigned long lastmicro = now;
 int curstat = HIGH;
-boolean rst = true;
+boolean strt = false;
 void loop() {
   now = micros();
   int st = digitalRead(READ_PIN);
   if(curstat != st){
-    if(rst && curstat == HIGH){
-      rst = false;
+    if(!strt){
+      strt = true;
+      _cur = &nodes[0];
     }else{
-      Serial.print(HIGH == curstat ? "H" : "L");
-      Serial.print((now - lastmicro) / 10, DEC);
-      Serial.print(",");
+      _cur->type = curstat;
+      _cur->val = now - lastmicro;
+      _cur ++;
     }
     curstat = st;
     lastmicro = now;
   }else{
-    if(HIGH == curstat && 500000 < (now - lastmicro)){
-      lastmicro = now;
-      if(!rst){
-        Serial.print("\n");
-        rst = true;
+    if(strt && HIGH == curstat && 500000 < (now - lastmicro)){
+      node* ptr = &nodes[0];
+      while(ptr < _cur){
+        Serial.print(HIGH == ptr->type ? "H" : "L");
+        Serial.print(ptr->val);
+        Serial.print(",");
       }
+      Serial.print("\n");
+      strt = false;
     }
   }
 }
