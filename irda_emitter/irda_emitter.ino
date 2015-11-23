@@ -1,10 +1,12 @@
 
 
-int LED=10;
+int LED=4;
 
 char cmd_low = 'H';//opposite due tue sensor output.
 char cmd_high = 'L';
 char cmd_end = 'E';
+
+unsigned int tdl = 13;
 
 void setup(){
   Serial.begin(57600);
@@ -17,7 +19,7 @@ typedef struct{
   int type;
 } node;
 
-node nodes[512];
+node nodes[384];
 
 node* _cur = &nodes[0];
 
@@ -26,11 +28,29 @@ void _init_cur(int type){
   _cur->val = 0;
 }
 
+void _on(long cnt){
+  while(0 < cnt){
+    PORTD |= _BV(LED);
+    delayMicroseconds(tdl);
+    PORTD &= ~_BV(LED);
+    delayMicroseconds(tdl);
+    cnt --;
+  }
+}
+void _off(long cnt){
+  while(0 < cnt){
+    PORTD &= ~_BV(LED);
+    delayMicroseconds(tdl);
+    PORTD &= ~_BV(LED);
+    delayMicroseconds(tdl);
+    cnt--;
+  }
+}
+
 void _process(){
   node* ptr = &nodes[0];
   while(ptr < _cur){
-    digitalWrite(LED, ptr->type);
-    delayMicroseconds(ptr->val);
+    HIGH != ptr->type ? _off(ptr->val) : _on(ptr->val);
     ptr++;
   }
   _cur = &nodes[0];
