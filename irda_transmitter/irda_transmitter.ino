@@ -33,9 +33,9 @@ void setup(){
   delay(200);
 }
 
-node nodes[384];
+node nodes[256];
 node* _cur = &nodes[0];
-node* _lim = &nodes[384];
+node* _lim = &nodes[256];
 
 void _record(){
   unsigned long now = micros();
@@ -129,10 +129,15 @@ void loop(){
       }else if(cmd_emit == inc){
         _emit();
         digitalWrite(LED, LOW);
+        Serial.print("e.done\n");
       }else if(cmd_rec == inc){
         _record();
+        Serial.print("r.done\n");
       }else if(cmd_clear == inc){
         _cur = &nodes[0];
+        Serial.print("c.done\n");
+      }else{
+        Serial.print(inc);
       }
     }
   }
