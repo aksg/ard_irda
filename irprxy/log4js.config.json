@@ -1,0 +1,13 @@
+{
+	"appenders": [
+		{
+			"type":	 "dateFile",
+			"category": "msg",
+			"filename": "../logs/msg.log",
+			"pattern":  "-yyyy-MM-dd-hh-mm"
+		},
+		{
+			"type":	 "console"
+		}
+	]
+}
