@@ -1,0 +1,36 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+<script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/jquery/2.1.1/jquery.min.js"></script>
+<script type="text/javascript">
+(function($){
+	function __convert (str){
+		var arr = str.split(",");
+		$("#length").html("" + arr.length);
+		return "{" + (arr.map(function(elm){
+			return "{" + [elm.substr(1), "L" == elm.substr(0,1) ? "LOW": "HIGH"].join(",") + "}";
+		}).join(",")) + "}";
+	}
+	function __trim(str){
+		return str.replace(/^\s+/,"").replace(/\s+$/, "");
+	}
+$(document).ready(function(){
+	$("#convert").click(function(){
+		$("#output").val("");
+		var txt = $("#input").val();
+		if(txt){
+			var lns = txt.split("\n");
+			$("#output").val(__convert(__trim(lns[0])));
+		}
+	});
+});
+})(jQuery);
+</script>
+</head>
+<body>
+<textarea id="input"></textarea>
+<button id="convert">convert</button>
+<textarea id="output"></textarea>
+<span id="length"></span>
+</body>
+</html>

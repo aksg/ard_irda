@@ -19,6 +19,8 @@ var ssloptions = {
 	rejectUnauthorized: false
 };*/
 
+var inotemplate = fs.readFileSync("./public/emitter.template.txt");
+
 // view engine setup
 app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'jade');

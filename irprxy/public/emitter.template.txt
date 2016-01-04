@@ -1,0 +1,67 @@
+
+#define LED 4
+
+#define tdl 13
+
+typedef struct{
+  int val;
+  int type;
+} node;
+
+node sw01[155] = REPLACE_SW01_VAL;
+node sw02[155] = REPLACE_SW02_VAL;
+
+void setup(){
+  Serial.begin(57600);
+  pinMode(LED, OUTPUT);
+  digitalWrite(LED, LOW);
+  delay(1000);
+}
+
+void _on(int cnt){
+  while(0 < cnt){
+    PORTD |= _BV(LED);
+    delayMicroseconds(tdl);
+    PORTD &= ~_BV(LED);
+    delayMicroseconds(tdl);
+    cnt --;
+  }
+}
+void _off(int cnt){
+  while(0 < cnt){
+    PORTD &= ~_BV(LED);
+    delayMicroseconds(tdl);
+    PORTD &= ~_BV(LED);
+    delayMicroseconds(tdl);
+    cnt--;
+  }
+}
+
+void _emit(node* ptr, int cnt){
+  for(int i = 0; i < cnt; i++){
+    HIGH != ptr->type ? _on(ptr->val) : _off(ptr->val);//irrecoder low means detecting emission
+    ptr++;
+  }
+}
+
+void _emit_all(){
+  _emit(sw01, 155);
+  delay(4000);
+  _emit(sw02, 155);
+}
+
+int llevel = 500;
+int val = 0;
+void loop(){
+  val = analogRead(0);
+  llevel = (llevel * 9 + val * 1) / 10;
+  if(llevel < 100){
+    Serial.println("emit");
+    _emit_all();
+    llevel = 500;
+    delay(6000);
+    Serial.println("done");
+  }
+  Serial.println(llevel);
+  delay(500);
+}
