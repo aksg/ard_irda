@@ -33,9 +33,9 @@ void setup(){
   delay(200);
 }
 
-node nodes[270];
+node nodes[250];
 node* _cur = &nodes[0];
-node* _lim = &nodes[270];
+node* _lim = &nodes[250];
 
 void _record(){
   unsigned long now = micros();
